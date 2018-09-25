@@ -30,11 +30,17 @@ var AuroraRequest = module.exports = function(opts) {
         method: method,
         uri: this.uri + path,
         json: body ? body : null
-      }, (err, res) => {
+      }, (err, res, body) => {
         if (err) {
           reject(err);
         }
-        resolve(res);
+        if (method === "GET") {
+          resolve(res.body);
+        } else if (method === "PUT") {
+          resolve(res.statusCode);
+        } else if (method === "POST") {
+          // TODO: what the fuck does a post return?
+        }
       })
     })
   }
@@ -52,4 +58,15 @@ AuroraRequest.prototype.turnOff = function() {
   return this.makeRequest("PUT", "/state", {"on": {"value": false}});
 }
 
-// TODO: add toggle function and more requests
+AuroraRequest.prototype.toggleOnOff = function() {
+  this.makeRequest("GET", "/state/on")
+    .catch(err => {
+      throw new Error(err);
+    })
+    .then(res => {
+      let state = JSON.parse(res).value;
+      state
+        ? this.turnOff().catch(err => {throw new Error(err)}).then(res => {console.log(res)})
+        : this.turnOn().catch(err => {throw new Error(err)}).then(res => {console.log(res)})
+    })
+}
