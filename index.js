@@ -50,11 +50,12 @@ AuroraRequest.prototype.getInfo = function() {
   return this.makeRequest("GET", "/");
 };
 
-AuroraRequest.prototype.setOnState = function(on) {
-  return this.makeRequest("PUT", "/state", {"on": {"value": on}});
-}
 AuroraRequest.prototype.getOnState = function() {
   return this.makeRequest("GET", "/state/on");
+}
+
+AuroraRequest.prototype.setOnState = function(on) {
+  return this.makeRequest("PUT", "/state", {"on": {"value": on}});
 }
 
 AuroraRequest.prototype.toggleOnOff = function() {
@@ -65,11 +66,8 @@ AuroraRequest.prototype.toggleOnOff = function() {
       })
       .then(res => {
         let state = JSON.parse(res).value;
-        state
-          ? this.turnOff().catch(err => {reject(err)}).then(res => {resolve(res)})
-          : this.turnOn().catch(err => {reject(err)}).then(res => {resolve(res)})
+        this.setOnState(!state).catch(err => {reject(err)}).then(res => {resolve(res)})
       })
   })
 }
 
-AuroraRequest
