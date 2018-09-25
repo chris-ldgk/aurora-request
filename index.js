@@ -63,7 +63,7 @@ AuroraRequest.prototype.toggleOnOff = function() {
         reject(err);
       })
       .then(res => {
-        let state = JSON.parse(res).value;
+        let state = res.value;
         this.setOnState(!state).catch(err => {reject(err)}).then(res => {resolve(res)})
       })
   })
@@ -93,10 +93,28 @@ AuroraRequest.prototype.setSaturation = function(sat) {
   return this.makeRequest("PUT", "/state", {"sat": {value: sat}});
 }
 
-AuroraRequest.prototype.getSaturation = function() {
-  return this.makeRequest("GET", "/state/sat");
+AuroraRequest.prototype.getColorTemp = function() {
+  return this.makeRequest("GET", "/state/ct");
 }
 
-AuroraRequest.prototype.setSaturation = function(sat) {
-  return this.makeRequest("PUT", "/state", {"sat": {value: sat}});
+AuroraRequest.prototype.setColorTemp = function(ct) {
+  return this.makeRequest("PUT", "/state", {"ct": {value: ct}});
 }
+
+AuroraRequest.prototype.getColorMode = function() {
+  return this.makeRequest("GET", "/state/colorMode");
+}
+
+AuroraRequest.prototype.getEffects = function() {
+  return this.makeRequest("GET", "/effects/effectsList");
+}
+
+AuroraRequest.prototype.getCurrentEffect = function() {
+  return this.makeRequest("GET", "/effects/select");
+}
+
+AuroraRequest.prototype.setCurrentEffect = function(effect) {
+  return this.makeRequest("PUT", "/effects", {select: effect})
+}
+
+// TODO: add more exotic requests
