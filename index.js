@@ -78,3 +78,11 @@ AuroraRequest.prototype.getBrightness = function() {
 AuroraRequest.prototype.setBrightness = function(brightness, duration) {
   return this.makeRequest("PUT", "/state", {"brightness": {value: brightness, duration: duration ? duration : 0}});
 }
+
+AuroraRequest.prototype.getHue = function() {
+  return this.makeRequest("GET", "/state/hue");
+}
+
+AuroraRequest.prototype.setHue = function(hue) {
+  return this.makeRequest("PUT", "/state", {"hue": {value: hue}});
+}
