@@ -22,28 +22,34 @@ var AuroraRequest = module.exports = function(opts) {
   this.host = opts.host;
   this.port = opts.port;
   this.token = opts.token;
+  this.uri = "http://" + opts.host + ":" + opts.port + "/api/v1/" + opts.token;
 
-  this.makeRequest = function(method, path) {
-    if (!method) {
-      method = "GET"
-    }
-
+  this.makeRequest = function(method, path, body) {
     return new Promise((resolve, reject) => {
       request({
         method: method,
-        uri: "http://" + opts.host + ":" + opts.port + "/api/v1/" + opts.token + path
+        uri: this.uri + path,
+        json: body ? body : null
       }, (err, res) => {
         if (err) {
           reject(err);
         }
-        resolve(res.body);
+        resolve(res);
       })
     })
   }
 };
 
 AuroraRequest.prototype.getInfo = function() {
-  return this.makeRequest("GET", "/")
+  return this.makeRequest("GET", "/");
 };
 
-// TODO: write put requests and stuff
+AuroraRequest.prototype.turnOn = function() {
+  return this.makeRequest("PUT", "/state", {"on": {"value": true}});
+}
+
+AuroraRequest.prototype.turnOff = function() {
+  return this.makeRequest("PUT", "/state", {"on": {"value": false}});
+}
+
+// TODO: add toggle function and more requests
