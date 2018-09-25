@@ -35,7 +35,7 @@ var AuroraRequest = module.exports = function(opts) {
           reject(err);
         }
         if (method === "GET") {
-          resolve(res.body);
+          resolve(JSON.parse(res.body));
         } else if (method === "PUT") {
           resolve(res.statusCode);
         } else if (method === "POST") {
