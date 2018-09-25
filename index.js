@@ -59,14 +59,18 @@ AuroraRequest.prototype.turnOff = function() {
 }
 
 AuroraRequest.prototype.toggleOnOff = function() {
-  this.makeRequest("GET", "/state/on")
-    .catch(err => {
-      throw new Error(err);
-    })
-    .then(res => {
-      let state = JSON.parse(res).value;
-      state
-        ? this.turnOff().catch(err => {throw new Error(err)}).then(res => {console.log(res)})
-        : this.turnOn().catch(err => {throw new Error(err)}).then(res => {console.log(res)})
-    })
+  return new Promise((resolve, reject) => {
+    this.makeRequest("GET", "/state/on")
+      .catch(err => {
+        reject(err);
+      })
+      .then(res => {
+        let state = JSON.parse(res).value;
+        state
+          ? this.turnOff().catch(err => {reject(err)}).then(res => {resolve(res)})
+          : this.turnOn().catch(err => {reject(err)}).then(res => {resolve(res)})
+      })
+  })
 }
+
+AuroraRequest
