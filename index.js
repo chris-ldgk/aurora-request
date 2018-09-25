@@ -50,14 +50,9 @@ AuroraRequest.prototype.getInfo = function() {
   return this.makeRequest("GET", "/");
 };
 
-AuroraRequest.prototype.turnOn = function() {
-  return this.makeRequest("PUT", "/state", {"on": {"value": true}});
+AuroraRequest.prototype.setOnState = function(on) {
+  return this.makeRequest("PUT", "/state", {"on": {"value": on}});
 }
-
-AuroraRequest.prototype.turnOff = function() {
-  return this.makeRequest("PUT", "/state", {"on": {"value": false}});
-}
-
 AuroraRequest.prototype.getOnState = function() {
   return this.makeRequest("GET", "/state/on");
 }
