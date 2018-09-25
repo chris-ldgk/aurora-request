@@ -71,3 +71,10 @@ AuroraRequest.prototype.toggleOnOff = function() {
   })
 }
 
+AuroraRequest.prototype.getBrightness = function() {
+  return this.makeRequest("GET", "/state/brightness");
+}
+
+AuroraRequest.prototype.setBrightness = function(brightness, duration) {
+  return this.makeRequest("PUT", "/state", {"brightness": {value: brightness, duration: duration ? duration : 0}});
+}
