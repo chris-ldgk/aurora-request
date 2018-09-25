@@ -38,8 +38,6 @@ var AuroraRequest = module.exports = function(opts) {
           resolve(JSON.parse(res.body));
         } else if (method === "PUT") {
           resolve(res.statusCode);
-        } else if (method === "POST") {
-          // TODO: what the fuck does a post return?
         }
       })
     })
@@ -85,4 +83,20 @@ AuroraRequest.prototype.getHue = function() {
 
 AuroraRequest.prototype.setHue = function(hue) {
   return this.makeRequest("PUT", "/state", {"hue": {value: hue}});
+}
+
+AuroraRequest.prototype.getSaturation = function() {
+  return this.makeRequest("GET", "/state/sat");
+}
+
+AuroraRequest.prototype.setSaturation = function(sat) {
+  return this.makeRequest("PUT", "/state", {"sat": {value: sat}});
+}
+
+AuroraRequest.prototype.getSaturation = function() {
+  return this.makeRequest("GET", "/state/sat");
+}
+
+AuroraRequest.prototype.setSaturation = function(sat) {
+  return this.makeRequest("PUT", "/state", {"sat": {value: sat}});
 }
