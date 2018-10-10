@@ -106,7 +106,7 @@ AuroraRequest.prototype.setHue = async function(hue) {
 
 AuroraRequest.prototype.getSaturation = async function() {
   try {
-    return await this.makeRequest("GET", "/state/sat");});
+    return await this.makeRequest("GET", "/state/sat");
   } catch(err) {
     console.log(err);
   }
