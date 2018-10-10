@@ -24,148 +24,97 @@ var AuroraRequest = module.exports = function(opts) {
   this.token = opts.token;
   this.uri = "http://" + opts.host + ":" + opts.port + "/api/v1/" + opts.token;
 
-  this.makeRequest = async function(method, path, body) {
-    request({
-      method: method,
-      uri: this.uri + path,
-      json: body ? body : null
-    }, (err, res, body) => {
-      if (method === "GET") {
-        return JSON.parse(res.body);
-      } else if (method === "PUT") {
-        return res.statusCode;
-      }
+  this.makeRequest = function(method, path, body) {
+    return new Promise((resolve, reject) => {
+      request({
+        method: method,
+        uri: this.uri + path,
+        json: body ? body : null
+      }, (err, res, body) => {
+        if (err) {
+          reject(err);
+        }
+        if (method === "GET") {
+          resolve(JSON.parse(res.body));
+        } else if (method === "PUT") {
+          resolve(res.statusCode);
+        }
+      })
     })
   }
 };
 
-AuroraRequest.prototype.getInfo = async function() {
-  try {
-    return await this.makeRequest("GET", "/");
-  } catch(err) {
-    console.log(err);
-  }
+AuroraRequest.prototype.getInfo = function() {
+  return this.makeRequest("GET", "/");
 };
 
-AuroraRequest.prototype.getOnState = async function() {
-  try {
-    return await this.makeRequest("GET", "/state/on");
-  } catch(err) {
-    console.log(err);
-  }
+AuroraRequest.prototype.getOnState = function() {
+  return this.makeRequest("GET", "/state/on");
 }
 
-AuroraRequest.prototype.setOnState = async function(on) {
-  try {
-    return await this.makeRequest("PUT", "/state", {"on": {"value": on}});
-  } catch(err) {
-    console.log(err);
-  }
+AuroraRequest.prototype.setOnState = function(on) {
+  return this.makeRequest("PUT", "/state", {"on": {"value": on}});
 }
 
-AuroraRequest.prototype.toggleOnOff = async function() {
-  try {
-    const onState = await this.getOnState();
-    return await this.setOnState(onState.value);;
-  } catch(err) {
-    console.log(err);
-  }
+AuroraRequest.prototype.toggleOnOff = function() {
+  return new Promise((resolve, reject) => {
+    this.getOnState()
+      .catch(err => {
+        reject(err);
+      })
+      .then(res => {
+        let state = res.value;
+        this.setOnState(!state).catch(err => {reject(err)}).then(res => {resolve(res)})
+      })
+  })
 }
 
-AuroraRequest.prototype.getBrightness = async function() {
-  try {
-    return await this.makeRequest("GET", "/state/brightness");
-  } catch(err) {
-    console.log(err);
-  }
+AuroraRequest.prototype.getBrightness = function() {
+  return this.makeRequest("GET", "/state/brightness");
 }
 
-AuroraRequest.prototype.setBrightness = async function(brightness, duration) {
-  try {
-    return await this.makeRequest("PUT", "/state", {"brightness": {value: brightness, duration: duration ? duration : 0}});
-  } catch(err) {
-    console.log(err);
-  }
+AuroraRequest.prototype.setBrightness = function(brightness, duration) {
+  return this.makeRequest("PUT", "/state", {"brightness": {value: brightness, duration: duration ? duration : 0}});
 }
 
-AuroraRequest.prototype.getHue = async function() {
-  try {
-    return await this.makeRequest("GET", "/state/hue");
-  } catch(err) {
-    console.log(err);
-  }
+AuroraRequest.prototype.getHue = function() {
+  return this.makeRequest("GET", "/state/hue");
 }
 
-AuroraRequest.prototype.setHue = async function(hue) {
-  try {
-    return await this.makeRequest("PUT", "/state", {"hue": {value: hue}});
-  } catch(err) {
-    console.log(err);
-  }
+AuroraRequest.prototype.setHue = function(hue) {
+  return this.makeRequest("PUT", "/state", {"hue": {value: hue}});
 }
 
-AuroraRequest.prototype.getSaturation = async function() {
-  try {
-    return await this.makeRequest("GET", "/state/sat");
-  } catch(err) {
-    console.log(err);
-  }
+AuroraRequest.prototype.getSaturation = function() {
+  return this.makeRequest("GET", "/state/sat");
 }
 
-AuroraRequest.prototype.setSaturation = async function(sat) {
-  try {
-    return await this.makeRequest("PUT", "/state", {"sat": {value: sat}});
-  } catch(err) {
-    console.log(err);
-  }
+AuroraRequest.prototype.setSaturation = function(sat) {
+  return this.makeRequest("PUT", "/state", {"sat": {value: sat}});
 }
 
-AuroraRequest.prototype.getColorTemp = async function() {
-  try {
-    return await this.makeRequest("GET", "/state/ct");
-  } catch(err) {
-    console.log(err);
-  }
+AuroraRequest.prototype.getColorTemp = function() {
+  return this.makeRequest("GET", "/state/ct");
 }
 
-AuroraRequest.prototype.setColorTemp = async function(ct) {
-  try {
-    return await this.makeRequest("PUT", "/state", {"ct": {value: ct}});
-  } catch(err) {
-    console.log(err);
-  }
+AuroraRequest.prototype.setColorTemp = function(ct) {
+  return this.makeRequest("PUT", "/state", {"ct": {value: ct}});
 }
 
-AuroraRequest.prototype.getColorMode = async function() {
-  try {
-    return await this.makeRequest("GET", "/state/colorMode");
-  } catch(err) {
-    console.log(err);
-  }
+AuroraRequest.prototype.getColorMode = function() {
+  return this.makeRequest("GET", "/state/colorMode");
 }
 
-AuroraRequest.prototype.getEffects = async function() {
-  try {
-    return await this.makeRequest("GET", "/effects/effectsList");
-  } catch(err) {
-    console.log(err);
-  }
+AuroraRequest.prototype.getEffects = function() {
+  return this.makeRequest("GET", "/effects/effectsList");
 }
 
-AuroraRequest.prototype.getCurrentEffect = async function() {
-  try {
-    return await this.makeRequest("GET", "/effects/select");
-  } catch(err) {
-    console.log(err);
-  }
+AuroraRequest.prototype.getCurrentEffect = function() {
+  return this.makeRequest("GET", "/effects/select");
 }
 
-AuroraRequest.prototype.setCurrentEffect = async function(effect) {
-  try {
-    return await this.makeRequest("PUT", "/effects", {select: effect})
-  } catch(err) {
-    console.log(err);
-  }
+AuroraRequest.prototype.setCurrentEffect = function(effect) {
+  return this.makeRequest("PUT", "/effects", {select: effect})
 }
 
 // TODO: add more exotic requests
