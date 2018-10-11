@@ -122,7 +122,11 @@ AuroraRequest.prototype.getCurrentEffect = function() {
 }
 
 AuroraRequest.prototype.setCurrentEffect = function(effect) {
-  return this.makeRequest("PUT", "/effects", {select: effect})
+  return this.makeRequest("PUT", "/effects", {select: effect});
+}
+
+AuroraRequest.prototype.write = function(effect) {
+  return this.makeRequest("PUT", "/effects", {write: {command: "request", animName: effect});
 }
 
 // TODO: add more exotic requests
