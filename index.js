@@ -41,11 +41,7 @@ var AuroraRequest = module.exports = function(opts) {
             reject(res.statusCode);
           }
         } else if (method === "PUT") {
-          if (res !== undefined && res.statusCode === 204) {
-            resolve(res.statusCode);
-          } else {
-            reject(res.statusCode);
-          }
+          resolve(res);
         }
       })
     })
